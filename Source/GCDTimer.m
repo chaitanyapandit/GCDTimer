@@ -10,6 +10,12 @@
     #define GCDTIMER_DISPATCH_RELEASE(q) (dispatch_release(q))
 #endif
 
+@interface GCDTimer ()
+
+@property NSTimer *countdownTimer;
+
+@end;
+
 @implementation GCDTimer {
     dispatch_source_t timer;
 }
@@ -35,6 +41,8 @@
                 block();
             }
             if (!repeats) {
+                [self.countdownTimer invalidate];
+                self.countdownTimer = nil;
                 dispatch_source_cancel(timer);
             }
         });
@@ -42,6 +50,8 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC), queue, ^{
             dispatch_resume(timer);
         });
+        
+        self.countdownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(updateCountdown:) userInfo:nil repeats:YES];
     }
     return self;
 }
@@ -53,6 +63,8 @@
 
 - (void) dealloc
 {
+    [self.countdownTimer invalidate];
+    self.countdownTimer = nil;
     dispatch_source_cancel(timer);
     GCDTIMER_DISPATCH_RELEASE(timer);
 }
@@ -65,6 +77,12 @@
 - (NSTimeInterval)timeRemaining
 {
     return self.interval - [[NSDate date] timeIntervalSinceDate:self.startDate];
+}
+
+- (void)updateCountdown:(NSTimer *)timer
+{
+    [self willChangeValueForKey:@"timeRemaining"];
+    [self didChangeValueForKey:@"timeRemaining"];
 }
 
 + (instancetype) scheduledTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats queue:(dispatch_queue_t)queue block:(dispatch_block_t)block

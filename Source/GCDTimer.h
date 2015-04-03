@@ -6,7 +6,7 @@
 
 @property NSTimeInterval interval;
 @property NSDate *startDate;
-@property (readonly) NSTimeInterval timeRemaining;
+@property (nonatomic, readonly) NSTimeInterval timeRemaining;
 
 /// block is called on supplied queue
 - (instancetype) initScheduledTimerWithTimeInterval:(NSTimeInterval)seconds repeats:(BOOL)repeats queue:(dispatch_queue_t)queue block:(dispatch_block_t)block;
