@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "GCDTimer"
-  s.version          = File.read('VERSION')
+  s.version          = '1.1.1'
   s.summary          = "Equivalent of NSTimer on GCD queues."
   s.description      = <<-DESC
                        Implementation of NSTimer-like class with API close as much as possible to original,
