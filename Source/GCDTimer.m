@@ -20,6 +20,8 @@
 
     if ((self = [super init]))
     {
+        self.interval = interval;
+        self.startDate = [NSDate date];
         timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
 
         dispatch_source_set_timer(timer,
@@ -58,6 +60,11 @@
 - (void) invalidate
 {
     dispatch_source_cancel(timer);
+}
+
+- (NSTimeInterval)timeRemaining
+{
+    return self.interval - [[NSDate date] timeIntervalSinceDate:self.startDate];
 }
 
 + (instancetype) scheduledTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats queue:(dispatch_queue_t)queue block:(dispatch_block_t)block
